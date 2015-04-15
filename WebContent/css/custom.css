@@ -1,0 +1,11 @@
+body {
+  padding-top: 50px;
+}
+
+.input-group-addon img {
+	height: 18px;
+}
+
+.input-group {
+	margin-top: 5px;
+}
