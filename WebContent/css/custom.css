@@ -6,6 +6,20 @@ body {
 	height: 18px;
 }
 
+.m-t {
+	margin-top: 20px;
+}
 .input-group {
-	margin-top: 5px;
+	margin-top: 3px;
+}
+
+#preview table th.header, #preview table tr.header td, #preview table tr.header th {
+	vertical-align: middle;
+	text-align: center;
+}
+
+#preview table tr td {
+	width: 77px;
+	height: 77px;
+	text-align: center;
 }

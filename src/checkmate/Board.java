@@ -1,9 +1,10 @@
 package checkmate;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import checkmate.pieces.AbstractPiece;
+import checkmate.pieces.PieceInterface;
 
 // The actual board
 public class Board {
@@ -23,18 +24,21 @@ public class Board {
 		this.y = y;
 	}
 
-	private Map<Position, AbstractPiece> pieces = new HashMap<Position, AbstractPiece>();
+	private Set<PieceInterface> pieces = new HashSet<PieceInterface>();
+	
+	public Set<PieceInterface> getPieces() {
+		return pieces;
+	}
 	
 	public boolean canAdd(AbstractPiece piece) {
-		if (pieces.containsKey(piece.getPosition())) return false;
-		for (Position p : pieces.keySet()){
-			if (pieces.get(p).canEat(piece)) return false;
+		for (PieceInterface p : pieces){
+			if (p.getPosition().equals(piece.getPosition()) || p.canEat(piece)) return false;
 		}
 		return true;
 	}
 	
 	public void add(AbstractPiece p) {
-		pieces.put(p.getPosition(), p);
+		pieces.add( p);
 	}
 	
 	public boolean isValid(Position p) {

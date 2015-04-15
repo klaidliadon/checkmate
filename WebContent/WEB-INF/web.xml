@@ -15,6 +15,6 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>CheckMate</servlet-name>
-    <url-pattern>/CheckMate</url-pattern>
+    <url-pattern>/index.jsp</url-pattern>
   </servlet-mapping>
 </web-app>
