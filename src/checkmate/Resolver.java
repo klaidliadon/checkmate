@@ -1,5 +1,6 @@
 package checkmate;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,6 +16,7 @@ import checkmate.pieces.Rook;
 
 public class Resolver {
 	private Board board;
+	private List<Piece> pieces;
 	
 	// creates a new piece using its name
 	public Piece newPiece(String type) {
@@ -41,7 +43,7 @@ public class Resolver {
 	}
 
 	// find all the valid positions
-	public Set<Position[]> resolve(List<Piece> pieces) {
+	public Set<Position[]> resolve() {
 		Set<Position[]> result = new HashSet<Position[]>();
 		int i = 0;
 		Position start = new Position(0, 0);
@@ -53,16 +55,16 @@ public class Resolver {
 					break;
 				}
 				// reset position for this and the following pieces
-				for (int j = i; j<pieces.size(); j++) {
-					pieces.get(j).setPosition(start);
+				for (int j = i; j<getPieces().size(); j++) {
+					getPieces().get(j).setPosition(start);
 				}
 				// remove one piece and resume moving the previous
 				i--;
 				board.pop();
-				pos = board.next(pieces.get(i).getPosition());
+				pos = board.next(getPieces().get(i).getPosition());
 				continue;
 			}
-			Piece piece = pieces.get(i);
+			Piece piece = getPieces().get(i);
 			piece.setPosition(pos);
 			if (!board.isAddSafe(piece)) {
 				// cannot add, move to next position
@@ -71,13 +73,23 @@ public class Resolver {
 				getBoard().push(piece);
 				i++;
 				// can add, check if all pieces are set
-				if (i == pieces.size()) {
-					Position[] match = new Position[pieces.size()];
-					for (int n=0; n<pieces.size(); n++) {
-						match[n] = pieces.get(n).getPosition();
+				if (i == getPieces().size()) {
+					Position[] match = new Position[getPieces().size()];
+					for (int n=0; n<getPieces().size(); n++) {
+						match[n] = getPieces().get(n).getPosition();
 					}
-					// add the match to results
-					result.add(match);
+					String[] m1 = matchString(match);
+					boolean newMatch = result.size() == 0;
+					for (Position[] p : result) {
+						String[] m2 = matchString(p);
+						for (int j = 0; j<m1.length; j++) {
+							// this result is unique
+							if (!m1[j].equals(m2[j])) newMatch = true;
+						}
+					}
+					if (newMatch) {
+						result.add(match);
+					}
 					// remove last piece and continue with it
 					i--;
 					piece = getBoard().pop();
@@ -99,4 +111,20 @@ public class Resolver {
 		this.board = board;
 	}
 
+	public List<Piece> getPieces() {
+		return pieces;
+	}
+
+	public void setPieces(List<Piece> pieces) {
+		this.pieces = pieces;
+	}
+	
+	private String[] matchString(Position[] p) {
+		String[] r = new String[p.length];
+		for (int i = 0; i<p.length; i++) {
+			r[i] = pieces.get(i).getClass().getSimpleName()+p[i].toString();
+		}
+		Arrays.sort(r);
+		return r;
+	}
 }

@@ -161,8 +161,9 @@ public class CheckMateTest {
 		Position start = p(0,0);
 		l.add(new King(r.getBoard(), start));
 		l.add(new King(r.getBoard(), start));
+		r.setPieces(l);
 		System.out.println("[King] [King]");
-		Set<Position[]> result = r.resolve(l);
+		Set<Position[]> result = r.resolve();
 		for (Position[] match : result) {
 			for (Position s : match) {
 				System.out.print(s+" ");

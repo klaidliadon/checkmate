@@ -38,8 +38,9 @@ public class CheckMateServlet extends HttpServlet {
 				pieces.add(r.newPiece(s));
 			}
 		}
+		r.setPieces(pieces);
 		request.setAttribute("pieces", pieces);
-		request.setAttribute("result", r.resolve(pieces));
+		request.setAttribute("result", r.resolve());
 		request.getRequestDispatcher(MAIN_PAGE).forward(request, response);
 	}
 

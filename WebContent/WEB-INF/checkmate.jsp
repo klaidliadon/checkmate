@@ -49,7 +49,7 @@
 			<c:choose>
 	      		<c:when test="${result != null}">
 	      			You searched the configurations of a ${width}x${height} board using the following pieces:
-	      			<ul>
+	      			<ul class="m-t">
 	      				<c:if test="${!empty pawn}"><li>${pawn} Pawn${pawn!=1?'s':''}</li></c:if>
 	      				<c:if test="${!empty bishop}"><li>${bishop} Bishop${bishop!=1?'s':''}</li></c:if>
 	      				<c:if test="${!empty king}"><li>${king} King${king!=1?'s':''}</li></c:if>
@@ -69,7 +69,7 @@
 									</c:forEach>
 	      						</tr>
 								<c:forEach items="${result}" var="combination" varStatus="i">
-									<tr class="result">
+									<tr class="result" title="Click to preview" data-toggle="tooltip" data-placement="left">
 										<td><a >${i.getIndex()+1}</a></td>
 										<c:forEach items="${combination}" var="p">
 											<td>${p}</td>

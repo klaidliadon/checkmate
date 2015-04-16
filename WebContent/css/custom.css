@@ -7,7 +7,7 @@ body {
 }
 
 .m-t {
-	margin-top: 20px;
+	margin-top: 10px;
 }
 .input-group {
 	margin-top: 3px;
@@ -22,6 +22,10 @@ body {
 	width: 77px;
 	height: 77px;
 	text-align: center;
+}
+
+#preview table tr td div.piece {
+	height: 60px;
 }
 
 .modal-dialog  {

@@ -5,9 +5,8 @@ $(function($){
 	result.find('tr').first().find('th').each(function(){
 		headers.push($(this).text());
 	});
-	result.find('a').click(function(){
-		var preview = $('#preview'),
-			row = $(this).parents('tr')
+	result.find('tr.result').click(function(){
+		var row = $(this)
 			table = $('<table/>').addClass("table table-bordered table-compact"),
 			first = $('<tr><td></td></tr>');
 		table.append(first);
@@ -18,9 +17,13 @@ $(function($){
 			var tr = $('<tr><th class="header">'+(x)+'</th></tr>');
 			for (var y = 0; y<height; y++) {
 				var cell = row.find(':contains("['+x+','+y+']")'),
-					name = cell?headers[cell.index()-1]:null,
-					title = name?name+' in ['+x+','+y+']':'';
-				tr.append($('<td/>').addClass(name?'info '+name.toLowerCase():'').html('&nbsp;').attr('title', title));
+					td = $('<td/>'),
+					name = headers[cell.index()-1];
+				if (name) {
+					td.addClass('info '+name.toLowerCase()).html('<div class="piece">&nbsp;</div>')
+					td.find('div').attr('data-placement', 'top').attr('title', name+' in ['+x+','+y+']').tooltip();
+				}
+				tr.append(td);
 			}
 			table.append(tr);
 		}
@@ -29,5 +32,9 @@ $(function($){
 		preview.find('.modal-body').append(table);
 		preview.find('.modal-dialog').width(w);
 		preview.modal('show');
-	})
+	});
+});
+
+$(function () {
+	$('[data-toggle="tooltip"]').tooltip()
 });
