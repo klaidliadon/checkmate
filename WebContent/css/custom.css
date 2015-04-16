@@ -23,3 +23,27 @@ body {
 	height: 77px;
 	text-align: center;
 }
+
+.modal-dialog  {
+	max-width:100%; 
+}
+
+.modal-body {
+	overflow: auto;
+}
+
+.pawn {background-image: url(../images/pawn.png)}
+.bishop {background-image: url(../images/bishop.png)}
+.king {background-image: url(../images/king.png)}
+.knight {background-image: url(../images/knight.png)}
+.queen {background-image: url(../images/queen.png)}
+.rook {background-image: url(../images/rook.png)}
+
+.pawn, .bishop, .king, .knight, .queen, .rook {
+	background-position: center;
+	background-repeat: no-repeat;	
+}
+
+.result {
+	cursor: pointer
+}

@@ -1,18 +1,16 @@
 package checkmate.web;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import checkmate.Board;
-import checkmate.Position;
-import checkmate.pieces.Bishop;
-import checkmate.pieces.King;
-import checkmate.pieces.Queen;
-import checkmate.pieces.Rook;
+import checkmate.Resolver;
+import checkmate.pieces.Piece;
 
 public class CheckMateServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -23,20 +21,25 @@ public class CheckMateServlet extends HttpServlet {
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setAttribute("width", request.getParameter("width"));
-		request.setAttribute("height", request.getParameter("height"));
+		int width = Integer.parseInt(request.getParameter("width"));
+		int height = Integer.parseInt(request.getParameter("height"));
+		request.setAttribute("width", width);
+		request.setAttribute("height", height);
+		Resolver r = new Resolver(width, height);
+		List<Piece> pieces = new ArrayList<Piece>();
 		for (String s : new String[]{"pawn","bishop","king","knight", "queen", "rook"}) {
-			request.setAttribute(s, request.getParameter(s));
+			String v = request.getParameter(s);
+			if (v == "" || v == null) {
+				continue;
+			}
+			int n = Integer.parseInt(v);
+			request.setAttribute(s, n);
+			for (int i = 0; i<n; i++) {
+				pieces.add(r.newPiece(s));
+			}
 		}
-		Board b1 = new Board(6, 6);
-		b1.add(new King(b1, new Position(0,0)));
-		b1.add(new Queen(b1, new Position(1,2)));
-		b1.add(new Queen(b1, new Position(2,4)));
-		Board b2 = new Board(6, 6);
-		b2.add(new Rook(b2, new Position(0,0)));
-		b2.add(new Bishop(b2, new Position(3,2)));
-		b2.add(new Queen(b2, new Position(4,3)));
-		request.setAttribute("result", new Board[]{b1,b2});
+		request.setAttribute("pieces", pieces);
+		request.setAttribute("result", r.resolve(pieces));
 		request.getRequestDispatcher(MAIN_PAGE).forward(request, response);
 	}
 

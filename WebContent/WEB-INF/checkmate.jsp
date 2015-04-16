@@ -64,15 +64,15 @@
 	      					
 	      						<tr>
 	      							<td></td>
-	      							<c:forEach items="${result[0].getPieces()}" var="p">
+	      							<c:forEach items="${pieces}" var="p">
 										<th>${p.getClass().getSimpleName()}</th>
 									</c:forEach>
 	      						</tr>
-								<c:forEach items="${result}" var="board" varStatus="i">
-									<tr>
+								<c:forEach items="${result}" var="combination" varStatus="i">
+									<tr class="result">
 										<td><a >${i.getIndex()+1}</a></td>
-										<c:forEach items="${board.getPieces()}" var="p">
-											<td>${p.getPosition()}</td>
+										<c:forEach items="${combination}" var="p">
+											<td>${p}</td>
 										</c:forEach>
 									</tr>
 								</c:forEach>
@@ -88,7 +88,6 @@
 											<h4 class="modal-title">Board Preview</h4>
 										</div>
 										<div class="modal-body">
-											<p>One fine body&hellip;</p>
 										</div>
 										<div class="modal-footer">
 											<button type="button" class="btn btn-primary"

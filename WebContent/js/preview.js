@@ -8,7 +8,7 @@ $(function($){
 	result.find('a').click(function(){
 		var preview = $('#preview'),
 			row = $(this).parents('tr')
-			table = $('<table/>').addClass("table table-bordered"),
+			table = $('<table/>').addClass("table table-bordered table-compact"),
 			first = $('<tr><td></td></tr>');
 		table.append(first);
 		for (var y = 0; y<height; y++) {
@@ -19,13 +19,15 @@ $(function($){
 			for (var y = 0; y<height; y++) {
 				var cell = row.find(':contains("['+x+','+y+']")'),
 					name = cell?headers[cell.index()-1]:null,
-					content = cell[0]?('<img title="'+name+' in ['+x+','+y+']" src="images/'+name.toLowerCase()+'.png"/>'):'&nbsp;';
-				tr.append($('<td/>').addClass(name?'info':'').html(content));
+					title = name?name+' in ['+x+','+y+']':'';
+				tr.append($('<td/>').addClass(name?'info '+name.toLowerCase():'').html('&nbsp;').attr('title', title));
 			}
 			table.append(tr);
 		}
+		var w = 60*y + 105;
 		preview.find('.modal-body').empty();
 		preview.find('.modal-body').append(table);
+		preview.find('.modal-dialog').width(w);
 		preview.modal('show');
 	})
 });

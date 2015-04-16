@@ -1,15 +1,23 @@
 package checkmate;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 
+import checkmate.pieces.AbstractPiece;
 import checkmate.pieces.Bishop;
 import checkmate.pieces.King;
 import checkmate.pieces.Knight;
-import checkmate.pieces.AbstractPiece;
+import checkmate.pieces.Piece;
 import checkmate.pieces.Queen;
 import checkmate.pieces.Rook;
 
@@ -146,5 +154,21 @@ public class CheckMateTest {
 		});
 	}
 
+	@Test
+	public void testResolver() {
+		Resolver r = new Resolver(3, 3);
+		List<Piece> l = new ArrayList<Piece>();
+		Position start = p(0,0);
+		l.add(new King(r.getBoard(), start));
+		l.add(new King(r.getBoard(), start));
+		System.out.println("[King] [King]");
+		Set<Position[]> result = r.resolve(l);
+		for (Position[] match : result) {
+			for (Position s : match) {
+				System.out.print(s+" ");
+			}
+			System.out.println();
+		}
+	}
 
 }

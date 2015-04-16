@@ -1,10 +1,9 @@
 package checkmate;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
+import java.util.Stack;
 
-import checkmate.pieces.AbstractPiece;
-import checkmate.pieces.PieceInterface;
+import checkmate.pieces.Piece;
 
 // The actual board
 public class Board {
@@ -24,25 +23,47 @@ public class Board {
 		this.y = y;
 	}
 
-	private Set<PieceInterface> pieces = new HashSet<PieceInterface>();
+	private Stack<Piece> pieces = new Stack<Piece>();
 	
-	public Set<PieceInterface> getPieces() {
+	public Collection<Piece> getPieces() {
 		return pieces;
 	}
 	
-	public boolean canAdd(AbstractPiece piece) {
-		for (PieceInterface p : pieces){
-			if (p.getPosition().equals(piece.getPosition()) || p.canEat(piece)) return false;
+	// check if a spot is free and not menaced
+	public boolean isAddSafe(Piece piece) {
+		for (Piece p : pieces){
+			if (piece.getPosition().equals(p.getPosition()) || piece.canEat(p) || p.canEat(piece)) return false;
 		}
 		return true;
 	}
 	
-	public void add(AbstractPiece p) {
-		pieces.add( p);
+	// add a piece to the board
+	public void push(Piece p) {
+		pieces.push(p);
 	}
 	
+	// remove last placed piece
+	public Piece pop() {
+		Piece p = pieces.pop();
+		return p;
+	}
+	
+	// check if the square is in the board
 	public boolean isValid(Position p) {
 		return p.getX()>-1 && p.getY()>-1 && p.getX() < x && p.getY() < y;
+	}
+	
+	// move to the next square in the check
+	public Position next(Position p) {
+		Position result = p.relative(1, 0);
+		if (isValid(result)) {
+			return result;
+		}
+		result = p.relative(-p.getX(), 1);
+		if (isValid(result)) {
+			return result;
+		}
+		return null;	
 	}
 
 }

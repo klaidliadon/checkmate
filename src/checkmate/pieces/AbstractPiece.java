@@ -8,14 +8,14 @@ import checkmate.Board;
 import checkmate.Position;
 
 // The piece in the board
-public abstract class AbstractPiece implements PieceInterface {
+public abstract class AbstractPiece implements Piece {
 
 	private Position position;
 
-	private final Board board;
+	private Board board;
 
 	private Position[] moves;
-
+	
 	public AbstractPiece(Board board, Position position) {
 		this.board = board;
 		this.setPosition(position);
@@ -25,7 +25,7 @@ public abstract class AbstractPiece implements PieceInterface {
 		return position;
 	}
 
-	final private void setPosition(Position position) {
+	final public void setPosition(Position position) {
 		this.position = position;
 		List<Position> moves = new ArrayList<Position>();
 		for (Position p : findMoves()) {
@@ -44,9 +44,11 @@ public abstract class AbstractPiece implements PieceInterface {
 		return moves;
 	}
 
+	// return the moves that a piece can make
 	protected abstract Position[] findMoves();
 
-	final public boolean canEat(PieceInterface piece) {
+	// tell if a piece can eat another
+	final public boolean canEat(Piece piece) {
 		for (Position p : moves) {
 			if (p.equals(piece.getPosition())) return true;
 		}
