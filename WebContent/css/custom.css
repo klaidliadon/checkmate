@@ -13,6 +13,22 @@ body {
 	margin-top: 3px;
 }
 
+#result {
+	display: none;
+}
+
+#result.ready {
+	display: table;
+}
+
+#loading {
+	display: block;
+}
+
+#loading.ready {
+	display: none;
+}
+
 #preview table th.header, #preview table tr.header td, #preview table tr.header th {
 	vertical-align: middle;
 	text-align: center;
@@ -23,6 +39,8 @@ body {
 	height: 77px;
 	text-align: center;
 }
+
+
 
 #preview table tr td div.piece {
 	height: 60px;

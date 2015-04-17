@@ -46,11 +46,12 @@ public class CheckMateServlet extends HttpServlet {
 			request.setAttribute("result", r.resolve());
 		} catch (Exception e) {
 			request.setAttribute("error", e);
+			e.printStackTrace();
 		} finally {
 			Date d2 = new Date();
 			request.setAttribute("ms", (d2.getTime() - d1.getTime()));
+			request.getRequestDispatcher(MAIN_PAGE).forward(request, response);
 		}
-		request.getRequestDispatcher(MAIN_PAGE).forward(request, response);
 	}
 
 }

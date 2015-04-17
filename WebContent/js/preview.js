@@ -1,7 +1,9 @@
 $(function($){
 	var headers = [],
 		preview = $('#preview'),
+		loading = $('#loading'),
 		result = $('#result');
+	result.add(loading).addClass('ready');
 	result.find('tr').first().find('th').each(function(){
 		headers.push($(this).text());
 	});

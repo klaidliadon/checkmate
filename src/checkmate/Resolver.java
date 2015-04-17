@@ -45,27 +45,41 @@ public class Resolver {
 	// find all the valid positions
 	public Set<Position[]> resolve() throws Exception {
 		Set<Position[]> result = new HashSet<Position[]>();
+		Set<String> resultString = new HashSet<String>();
 		int i = 0;
 		int counter = 1;
 		Position start = new Position(0, 0);
+		Piece first = pieces.get(0);
 		for (Position pos = start; i >= 0; counter++) {
 			if (pos == null) {
 				// no position
 				if (i == 0) {
-					//no pieces left
-					break;
+					if (board.next(first.getPosition()) == null) {
+						// first piece finished
+						System.out.println(String.format("exit: %s", first));
+						break;
+					}
+					board.reset();
+				} else {
+					// remove one piece and resume moving the previous
+					board.pop();
+					i--;
+					// reset position for this and the following pieces
+					for (int j = i+1; j<getPieces().size(); j++) {
+						getPieces().get(j).setPosition(start);
+					}
+					pos = board.next(getPieces().get(i).getPosition());
+					continue;
 				}
-				// reset position for this and the following pieces
-				for (int j = i; j<getPieces().size(); j++) {
-					getPieces().get(j).setPosition(start);
-				}
-				// remove one piece and resume moving the previous
-				i--;
-				board.pop();
-				pos = board.next(getPieces().get(i).getPosition());
-				continue;
 			}
-			System.out.println(String.format("Iteration %d", counter));
+			if (Board.DEBUG) {
+				System.out.print(String.format("Status [%d results] (iteration %d) - Current: ",result.size(), counter, i));
+				for (int k = 0; k<=i-1; k++) {
+					System.out.print(pieces.get(k)+" ");
+				}
+				System.out.println();
+			}
+			
 			Piece piece = getPieces().get(i);
 			piece.setPosition(pos);
 			if (!board.isAddSafe(piece)) {
@@ -80,17 +94,23 @@ public class Resolver {
 					for (int n=0; n<getPieces().size(); n++) {
 						match[n] = getPieces().get(n).getPosition();
 					}
-					String[] m1 = matchString(match);
-					boolean newMatch = result.size() == 0;
-					for (Position[] p : result) {
-						String[] m2 = matchString(p);
-						for (int j = 0; j<m1.length; j++) {
-							// this result is unique
-							if (!m1[j].equals(m2[j])) newMatch = true;
+					String sMatch = matchString(match);
+					boolean newMatch = true;
+					if (!newMatch) {
+						for (String s: resultString) {
+							if (!s.equals(sMatch)) continue;
+							newMatch = true;
+							break;
 						}
 					}
 					if (newMatch) {
 						result.add(match);
+						resultString.add(sMatch);
+						System.out.print(String.format("Match (%d): ", counter));
+						for (int k = 0; k<=i-1; k++) {
+							System.out.print(pieces.get(k)+" ");
+						}
+						System.out.println();
 					}
 					// remove last piece and continue with it
 					i--;
@@ -101,7 +121,9 @@ public class Resolver {
 					pos = start;
 				}
 			}
+			
 		}
+		System.out.println(String.format("Final Status (i:%d, p:%s)", counter, i));
 		return result;
 	}
 
@@ -121,12 +143,16 @@ public class Resolver {
 		this.pieces = pieces;
 	}
 	
-	private String[] matchString(Position[] p) {
+	private String matchString(Position[] p) {
 		String[] r = new String[p.length];
 		for (int i = 0; i<p.length; i++) {
 			r[i] = pieces.get(i).getClass().getSimpleName()+p[i].toString();
 		}
 		Arrays.sort(r);
-		return r;
+		String result = "";
+		for (String s : r) {
+			result += s;
+		}
+		return result;
 	}
 }

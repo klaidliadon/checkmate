@@ -58,7 +58,7 @@
 	      				<c:if test="${!empty queen}"><li>${queen} Queen${queen!=1?'s':''}</li></c:if>
 	      			</ul>
 	      			<h3>Result</h3>
-	      			<p>The search took ${ms} ms.</p>
+	      			<p>The search took ${ms} ms. <c:if test="${!empty result}">There are ${result.size()} combinations.</c:if></p>
 	      			<c:choose>
 	      				<c:when test="${!empty error}">
 	      					<p>An error occurred (${error.getClass()}: ${error.getMessage()})</p>
@@ -68,6 +68,8 @@
 							</jsp:scriptlet></code></pre>
 	      				</c:when>
 	      				<c:when test="${!empty result}">
+	      					<p>There are ${result.size()} combinations.</p>
+	      					<p id="loading"> Results are loading...</p>
 	      					<table id="result" class="table m-t">
 	      						<tr>
 	      							<td></td>
