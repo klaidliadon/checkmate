@@ -155,7 +155,7 @@ public class CheckMateTest {
 	}
 
 	@Test
-	public void testResolver() {
+	public void testResolver() throws Exception {
 		Resolver r = new Resolver(3, 3);
 		List<Piece> l = new ArrayList<Piece>();
 		Position start = p(0,0);

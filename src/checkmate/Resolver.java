@@ -43,11 +43,12 @@ public class Resolver {
 	}
 
 	// find all the valid positions
-	public Set<Position[]> resolve() {
+	public Set<Position[]> resolve() throws Exception {
 		Set<Position[]> result = new HashSet<Position[]>();
 		int i = 0;
+		int counter = 1;
 		Position start = new Position(0, 0);
-		for (Position pos = start; i >= 0; ) {
+		for (Position pos = start; i >= 0; counter++) {
 			if (pos == null) {
 				// no position
 				if (i == 0) {
@@ -64,6 +65,7 @@ public class Resolver {
 				pos = board.next(getPieces().get(i).getPosition());
 				continue;
 			}
+			System.out.println(String.format("Iteration %d", counter));
 			Piece piece = getPieces().get(i);
 			piece.setPosition(pos);
 			if (!board.isAddSafe(piece)) {

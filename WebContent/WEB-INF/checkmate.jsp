@@ -58,10 +58,17 @@
 	      				<c:if test="${!empty queen}"><li>${queen} Queen${queen!=1?'s':''}</li></c:if>
 	      			</ul>
 	      			<h3>Result</h3>
+	      			<p>The search took ${ms} ms.</p>
 	      			<c:choose>
+	      				<c:when test="${!empty error}">
+	      					<p>An error occurred (${error.getClass()}: ${error.getMessage()})</p>
+	      					<pre><code><jsp:scriptlet>
+									  Exception e = (Exception) request.getAttribute("error");
+									  e.printStackTrace(new java.io.PrintWriter(out));
+							</jsp:scriptlet></code></pre>
+	      				</c:when>
 	      				<c:when test="${!empty result}">
 	      					<table id="result" class="table m-t">
-	      					
 	      						<tr>
 	      							<td></td>
 	      							<c:forEach items="${pieces}" var="p">

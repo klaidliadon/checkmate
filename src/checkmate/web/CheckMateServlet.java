@@ -2,6 +2,7 @@ package checkmate.web;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -40,7 +41,15 @@ public class CheckMateServlet extends HttpServlet {
 		}
 		r.setPieces(pieces);
 		request.setAttribute("pieces", pieces);
-		request.setAttribute("result", r.resolve());
+		Date d1 = new Date();
+		try {
+			request.setAttribute("result", r.resolve());
+		} catch (Exception e) {
+			request.setAttribute("error", e);
+		} finally {
+			Date d2 = new Date();
+			request.setAttribute("ms", (d2.getTime() - d1.getTime()));
+		}
 		request.getRequestDispatcher(MAIN_PAGE).forward(request, response);
 	}
 
