@@ -22,9 +22,9 @@ public class BoardResolver {
 	
 	public void resolve() {
 		// map of combination of pieces and remaining valid squares
-		Map<Combination, ValidSquares> valid = null;
-		// all the squares in the board available
-		ValidSquares squares = new ValidSquares();
+		Map<Combination, Squares> valid = null;
+		// all the squares available (not menaced and not occupied) in the board
+		Squares squares = new Squares(w, h);
 		// for each piece enrich current combinations
 		for (Piece piece : pieces.keySet()) {
 			int pieceNum = pieces.get(piece);
@@ -37,9 +37,9 @@ public class BoardResolver {
 				valid = piece.filter(null, squares, pieceNum);
 				continue;
 			}
-			// new and outdates combinations (with their valid squares)
+			// new and outdated combinations (with their valid squares)
 			Set<Combination> keysRemove = new HashSet<Combination>();
-			Map<Combination, ValidSquares> entryAdd = new HashMap<Combination, ValidSquares>();
+			Map<Combination, Squares> entryAdd = new HashMap<Combination, Squares>();
 			
 			// for each existing valid combination add new ones to add list
 			// and add itself to delete list (list used to not modify valid during the iteration)
