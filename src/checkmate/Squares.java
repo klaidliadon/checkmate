@@ -31,6 +31,18 @@ public class Squares extends LinkedHashSet<Integer> {
 		return (int) Math.floor(p/w);
 	}
 	
+	public int xy(int x, int y) {
+		return x+w*y;
+	}
+	
+	public int invertX(int x) {
+		return (w-1)-x;
+	}
+	
+	public int invertY(int y) {
+		return (h-1)-y;
+	}
+	
 	@Override
 	public String toString() {
 		return getString();

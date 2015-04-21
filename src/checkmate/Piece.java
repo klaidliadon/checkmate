@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.paukov.combinatorics.CombinatoricsVector;
 import org.paukov.combinatorics.Factory;
-import org.paukov.combinatorics.Generator;
 import org.paukov.combinatorics.ICombinatoricsVector;
 
 public enum Piece {
@@ -23,19 +22,20 @@ public enum Piece {
 		NAME_SET.put("king", Piece.KING);
 	}
 	
-	public Map<Combination, Squares> append(Combination pieces, Squares squares, int number, Squares start) {
+	public Map<Combination, Squares> append(Combination pieces, Squares squares, int number, Iterable<ICombinatoricsVector<Integer>> generator) {
 		Map<Combination, Squares> result = new HashMap<Combination, Squares>();
-		if (start == null) start = squares;
-		Generator<Integer> generator = Factory.createSimpleCombinationGenerator(new CombinatoricsVector<Integer>(start), number);
+		if (generator == null) {
+			generator = Factory.createSimpleCombinationGenerator(new CombinatoricsVector<Integer>(squares), number);
+		}
 	permutations: 
-		for (ICombinatoricsVector<Integer> permutation : generator) {
-			Combination newComb = new Combination(start.w, start.h);
+		for (Iterable<Integer> permutation : generator) {
+			Combination newComb = new Combination(squares.w, squares.h);
 			if (pieces != null) {
 				for (Integer i : pieces) {
 					newComb.add(i);
 				}
 			}
-			Squares free = new Squares(start.w, start.h);
+			Squares free = new Squares(squares.w, squares.h);
 			for (Integer i : squares) {
 				free.add(i);
 			}
@@ -47,6 +47,11 @@ public enum Piece {
 				}
 				// add the new piece to combination
 				newComb.add(pos);
+			}
+			for (Combination alt : newComb.getAlternative()) {
+				if (result.containsKey(alt)) {
+					continue permutations;
+				}
 			}
 			result.put(newComb, free);
 		}
