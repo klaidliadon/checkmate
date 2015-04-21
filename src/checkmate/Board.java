@@ -74,6 +74,7 @@ public class Board {
 				//remove outdated and add new results
 				valid = newValid;
 			}
+			System.out.println(String.format("After %s (x%d) - %d combinantions", piece, pieceNum, valid.size()));
 		}
 		return valid;
 	}

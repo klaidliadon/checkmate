@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>  
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -58,7 +59,7 @@
 	      				<c:if test="${!empty queen}"><li>${queen} Queen${queen!=1?'s':''}</li></c:if>
 	      			</ul>
 	      			<h3>Result</h3>
-	      			<p>The search took ${ms} ms. <c:if test="${!empty result}">There are ${result.size()} combinations.</c:if></p>
+	      			<p>The search took ${ms} ms. <c:if test="${!empty result}">There are ${fn:length(result)} combinations.</c:if></p>
 	      			<c:choose>
 	      				<c:when test="${!empty error}">
 	      					<p>An error occurred (${error.getClass()}: ${error.getMessage()})</p>
@@ -77,13 +78,13 @@
 									</c:forEach>
 									<th class="hidden">free</th>
 	      						</tr>
-								<c:forEach items="${result}" var="combination" varStatus="i">
+								<c:forEach items="${result.keySet()}" var="combination" varStatus="i">
 									<tr class="result" title="Click to preview" data-toggle="tooltip" data-placement="left">
-										<td><a >${i.getIndex()+1}</a></td>
+										<td><a>${i.getIndex()+1}</a></td>
 										<c:forEach items="${combination}" var="p">
-											<td>${p}</td>
+											<td>${combination.getString(p)}</td>
 										</c:forEach>
-										<td class="hidden free">${free.get(combination)}</td>
+										<td class="hidden free">${result.get(combination)}</td>
 									</tr>
 								</c:forEach>
 							</table>
