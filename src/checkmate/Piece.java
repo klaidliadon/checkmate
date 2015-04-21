@@ -1,0 +1,87 @@
+package checkmate;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.paukov.combinatorics.CombinatoricsVector;
+import org.paukov.combinatorics.Factory;
+import org.paukov.combinatorics.Generator;
+import org.paukov.combinatorics.ICombinatoricsVector;
+
+public enum Piece {
+	QUEEN, ROOK, BISHOP, KING, KNIGTH;
+	
+	public Map<Combination, Squares> append(Combination pieces, Squares squares, int number, Squares start) {
+		Map<Combination, Squares> result = new HashMap<Combination, Squares>();
+		if (start == null) start = squares;
+		Generator<Integer> generator = Factory.createSimpleCombinationGenerator(new CombinatoricsVector<Integer>(start), number);
+	permutations: 
+		for (ICombinatoricsVector<Integer> permutation : generator) {
+			Combination newComb = new Combination(start.w, start.h);
+			if (pieces != null) {
+				for (Integer i : pieces) {
+					newComb.add(i);
+				}
+			}
+			Squares free = new Squares(start.w, start.h);
+			for (Integer i : squares) {
+				free.add(i);
+			}
+			for (Integer pos : permutation) {
+				// find the spots menaced by the permutation
+				free = findFree(newComb, free, pos);
+				if (free == null || free.isEmpty()) {
+					continue permutations;
+				}
+				// add the new piece to combination
+				newComb.add(pos);
+			}
+			result.put(newComb, free);
+		}
+		return result;
+	}
+
+	Squares findFree(Combination comb, Squares sq, Integer p) {
+		int px = sq.x(p);
+		int py = sq.y(p);
+		Squares newSq = new Squares(sq.w, sq.h);
+		// if any menaced spot is in the current combination (including new pieces)
+		for (int i : comb) {
+			int ix = sq.x(i);
+			int iy = sq.y(i);
+			if (isMenaced(ix, iy, px, py)) return null;
+		}
+		for (int i : sq) {
+			int ix = sq.x(i);
+			int iy = sq.y(i);
+			if (!isMenaced(ix, iy, px, py)){
+				newSq.add(i);
+			}
+		}
+		return newSq;
+	}
+	
+	boolean isMenaced(int ix, int iy, int px, int py) {
+		int dx = Math.abs(ix-px);
+		int dy = Math.abs(iy-py);
+		if (dx == 0 && dy == 0) return true;
+		switch (this) {
+		case BISHOP:
+			// diagonal
+			return dx == dy;
+		case KING:
+			// adjacent
+			return dx < 2 && dy < 2; 
+		case KNIGTH:
+			// special
+			return (dx == 1 && dy == 2) || (dx == 2 && dy == 1);
+		case QUEEN:
+			// diagonal and orthogonal
+			return (dx == 0 ^ dy == 0) || dx == dy;
+		case ROOK:
+			// orthogonal
+			return dx == 0 ^ dy == 0;
+		}
+		return false;
+	}
+}

@@ -1,104 +1,81 @@
 package checkmate;
 
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Stack;
+import java.util.Set;
 
-import checkmate.pieces.Piece;
-
-// The actual board
 public class Board {
-
-	public static final boolean DEBUG = false;
 	
-	private int x, y;
-
-	public int getX() {
-		return x;
+	// board size
+	int w;
+	int h;
+	
+	Map<Piece, Integer> pieces;
+	
+	public Board(int w, int h, Map<Piece, Integer> pieces) {
+		this.w = w;
+		this.h = h;
+		this.pieces = pieces;
 	}
 
-	public int getY() {
-		return y;
-	}
-
-	public Board(int x, int y) {
-		this.x = x;
-		this.y = y;
-		reset();
-	}
-	
-	public void reset() {
-		pieces = new Stack<Piece>();
-	} 
-
-	private Stack<Piece> pieces;
-	
-	private static Map<String, Boolean> validityCache = new HashMap<String, Boolean>();
-	
-	public Collection<Piece> getPieces() {
-		return pieces;
-	}
-	
-	// check if a spot is free and not menaced
-	public boolean isAddSafe(Piece piece) {
-		Position pos = piece.getPosition();
-		boolean menacing = false;
-		for (Piece p : pieces) {
-			// any other piece in the spot
-			if (p.getPosition().equals(pos)) {
-				if (DEBUG) System.out.println(String.format("Cannot add %s: occupied by %s", piece, p));
-				return false;
+	/**
+	 * For each piece type and number (e.g. 2 Queens) calculates the
+	 * combinations that are not menacing any other piece on the board. Each
+	 * combination is associated with the list of the squares that not menaced,
+	 * this list is used to place the following pieces. While the number of
+	 * valid partial combinations grows, the number of free squares shrinks.
+	 * 
+	 * @return a map of combinations and not menaced squares
+	 */
+	public Map<Combination, Squares> resolve() {
+		// map of combination of pieces and remaining valid squares
+		Map<Combination, Squares> valid = null;
+		// all the squares available (not menaced and not occupied) in the board
+		Squares squares = new Squares(w, h);
+		Squares squaresOct = new Squares(w, h);
+		for (int x = 0; x<w; x++) {
+			for (int y=0; y<h; y++) {
+				int v = x*w+y;
+				squares.add(v);
+				if (x<=(w/2+1) && y>=x && y<(h/2+1)) {
+					squaresOct.add(v);
+				}
 			}
-			// is it in cache
-			String s = p.toString()+piece.toString();
-			if (validityCache.containsKey(s)) {
-				boolean result = validityCache.get(s);
-				if (DEBUG) System.out.println(String.format("load cache %s "+result, s));
-				if (result == false) return result;
+		}
+		// for each piece enrich current combinations
+		for (Piece piece : pieces.keySet()) {
+			int pieceNum = pieces.get(piece);
+			if (valid == null) {
+				// init of valid pieces
+				valid = piece.append(null, squares, pieceNum, null);
+			} else {
+				if (valid.isEmpty()) {
+					return valid;
+				}
+				// new and outdated combinations (with their valid squares)
+				Set<Combination> keysRemove = new HashSet<Combination>();
+				Map<Combination, Squares> newValid = new HashMap<Combination, Squares>();
+				
+				// for each existing valid combination add new ones to add list
+				// and add itself to delete list (list used to not modify valid during the iteration)
+				for (Combination combination : valid.keySet()) {
+					Map<Combination, Squares> toAdd = piece.append(combination, valid.get(combination), pieceNum, null);
+					for (Combination k : toAdd.keySet()) {
+						Squares free = new Squares(w, h);
+						for (Integer i : toAdd.get(k)) {
+							free.add(i);
+						} 
+						newValid.put(k, free );
+					}
+					keysRemove.add(combination);
+				}
+	
+				//remove outdated and add new results
+				valid = newValid;
 			}
-			if (piece.canEat(p) || p.canEat(piece)) {
-				if (DEBUG) System.out.println(String.format("Cannot add %s: menacing by %s", piece, p));
-				menacing = true;
-			}
-			String s1 = p.toString()+piece.toString();
-			String s2 = p.toString()+piece.toString();
-			validityCache.put(s1, !menacing);
-			validityCache.put(s2, !menacing);
-			if (DEBUG) System.out.println(String.format("save cache %s %s "+!menacing, s1, s2));
 		}
-		return !menacing;
-	}
-	
-	// add a piece to the board
-	public void push(Piece p) throws Exception {
-		if (DEBUG) System.out.println(String.format("Adding piece %d %s in %s", pieces.size()+1, p.getClass().getSimpleName(), p.getPosition()));
-		pieces.push(p);
-	}
-	
-	// remove last placed piece
-	public Piece pop() throws Exception {
-		Piece p = pieces.pop();
-		if (DEBUG) System.out.println(String.format("Removing %s", p));
-		return p;
-	}
-	
-	// check if the square is in the board
-	public boolean isValid(Position p) {
-		return p.getX()>-1 && p.getY()>-1 && p.getX() < x && p.getY() < y;
-	}
-	
-	// move to the next square in the check
-	public Position next(Position p) {
-		Position result = p.relative(1, 0);
-		if (isValid(result)) {
-			return result;
-		}
-		result = p.relative(-p.getX(), 1);
-		if (isValid(result)) {
-			return result;
-		}
-		return null;	
+		return valid;
 	}
 
 }
