@@ -68,14 +68,14 @@
 							</jsp:scriptlet></code></pre>
 	      				</c:when>
 	      				<c:when test="${!empty result}">
-	      					<p>There are ${result.size()} combinations.</p>
 	      					<p id="loading"> Results are loading...</p>
 	      					<table id="result" class="table m-t">
 	      						<tr>
 	      							<td></td>
 	      							<c:forEach items="${pieces}" var="p">
-										<th>${p.getClass().getSimpleName()}</th>
+										<th>${p.toLowerCase()}</th>
 									</c:forEach>
+									<th class="hidden">free</th>
 	      						</tr>
 								<c:forEach items="${result}" var="combination" varStatus="i">
 									<tr class="result" title="Click to preview" data-toggle="tooltip" data-placement="left">
@@ -83,10 +83,11 @@
 										<c:forEach items="${combination}" var="p">
 											<td>${p}</td>
 										</c:forEach>
+										<td class="hidden free">${free.get(combination)}</td>
 									</tr>
 								</c:forEach>
 							</table>
-							<div class="modal fade" id="preview">
+							<div class="modal fade" id="preview" tabindex="-1">
 								<div class="modal-dialog">
 									<div class="modal-content">
 										<div class="modal-header">
@@ -173,7 +174,7 @@
 	<script src="js/bootstrap.min.js"></script>
 	<c:if test="${result!=null}"><script src="js/preview.js"></script></c:if>
 	<script>
-		var width = ${width}, height = ${height};
+		var width = ${width!=null?width:0}, height = ${height!=null?height:0};
 	</script>
 </body>
 </html>

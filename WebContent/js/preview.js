@@ -21,10 +21,11 @@ $(function($){
 				var cell = row.find(':contains("['+x+','+y+']")'),
 					td = $('<td/>'),
 					name = headers[cell.index()-1];
-				if (name) {
-					td.addClass('info '+name.toLowerCase()).html('<div class="piece">&nbsp;</div>')
-					td.find('div').attr('data-placement', 'top').attr('title', name+' in ['+x+','+y+']').tooltip();
+				if (!name) {
+					name = 'menaced';
 				}
+				td.addClass(name.toLowerCase()).html('<div class="piece">&nbsp;</div>')
+				td.find('div').attr('data-placement', 'top').attr('title', name+' in ['+x+','+y+']').tooltip();
 				tr.append(td);
 			}
 			table.append(tr);

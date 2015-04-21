@@ -29,21 +29,23 @@ body {
 	display: none;
 }
 
-#preview table th.header, #preview table tr.header td, #preview table tr.header th {
+#preview table th.header, #preview table tr.header th {
 	vertical-align: middle;
 	text-align: center;
 }
 
 #preview table tr td {
-	width: 77px;
-	height: 77px;
+	width: 60px;
+	height: 60px;
 	text-align: center;
 }
 
-
+th {
+	text-transform: capitalize;
+}
 
 #preview table tr td div.piece {
-	height: 60px;
+	height: 43px;
 }
 
 .modal-dialog  {
@@ -64,6 +66,15 @@ body {
 .pawn, .bishop, .king, .knight, .queen, .rook {
 	background-position: center;
 	background-repeat: no-repeat;	
+	background-color: #d9edf7;
+}
+
+.free {
+	background-color: #dff0d8;
+}
+
+.menaced {
+	background-color: #fcf8e3;
 }
 
 .result {
