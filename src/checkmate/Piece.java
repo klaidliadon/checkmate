@@ -1,6 +1,7 @@
 package checkmate;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.paukov.combinatorics.CombinatoricsVector;
@@ -9,7 +10,18 @@ import org.paukov.combinatorics.Generator;
 import org.paukov.combinatorics.ICombinatoricsVector;
 
 public enum Piece {
-	QUEEN, ROOK, BISHOP, KING, KNIGTH;
+	QUEEN, ROOK, BISHOP, KING, KNIGHT;
+	
+	public static Map<String, Piece> NAME_SET;
+	
+	static {
+		NAME_SET = new LinkedHashMap<String, Piece>();
+		NAME_SET.put("queen", Piece.QUEEN);
+		NAME_SET.put("rook", Piece.ROOK);
+		NAME_SET.put("bishop", Piece.BISHOP);
+		NAME_SET.put("knight", Piece.KNIGHT);
+		NAME_SET.put("king", Piece.KING);
+	}
 	
 	public Map<Combination, Squares> append(Combination pieces, Squares squares, int number, Squares start) {
 		Map<Combination, Squares> result = new HashMap<Combination, Squares>();
@@ -72,7 +84,7 @@ public enum Piece {
 		case KING:
 			// adjacent
 			return dx < 2 && dy < 2; 
-		case KNIGTH:
+		case KNIGHT:
 			// special
 			return (dx == 1 && dy == 2) || (dx == 2 && dy == 1);
 		case QUEEN:

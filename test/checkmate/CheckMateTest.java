@@ -51,7 +51,7 @@ public class CheckMateTest {
 	
 	@Test
 	public void testPieceKnight(){
-		Piece piece = Piece.KNIGTH;
+		Piece piece = Piece.KNIGHT;
 		Position pos = p(2,2);
 		Map<Position, Boolean> m = new HashMap<Position, Boolean>();
 		m.put(p(0,1), true);
