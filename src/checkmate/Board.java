@@ -40,7 +40,7 @@ public class Board {
 			for (int y=0; y<h; y++) {
 				int v = squares.xy(x, y);
 				squares.add(v);
-				if (x<=(int)(w/2) && y<=(int)(h/2)) {
+				if ((float)x<(float)(w/2) && (float)y<(float)(h/2)) {
 					quarter.add(v);
 				}
 			}

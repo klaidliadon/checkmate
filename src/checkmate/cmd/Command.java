@@ -25,18 +25,9 @@ public class Command {
 		int height = Integer.parseInt(properties.getProperty("board.height"));
 		System.out.println(String.format("Board size: %dx%d", width, height));
 		Map<Piece, Integer> input = new LinkedHashMap<Piece, Integer>();
-		List<String> pieces = new ArrayList<String>();
-		for (String s : Piece.NAME_SET.keySet()) {
-			String v = properties.getProperty(s);
-			if (v == "" || v == null) {
-				continue;
-			}
-			int n = Integer.parseInt(v);
-			if (n == 0) continue;
-			for (int i=0; i<n; i++) {
-				pieces.add(s);
-			}
-			input.put(Piece.NAME_SET.get(s), n);
+		List<String> pieces = createList(properties);
+		for (String s : pieces) {
+			input.put(Piece.NAME_SET.get(s), Integer.parseInt(properties.getProperty(s)));
 		}
 		Date d1 = new Date();
 		Map<Combination, Squares> result = null;
@@ -58,11 +49,26 @@ public class Command {
 					}
 				}
 			}
+		}	
+	}
+	
+	protected static List<String> createList(Properties properties) {
+		List<String> pieces = new ArrayList<String>();
+		for (String s : Piece.NAME_SET.keySet()) {
+			String v = properties.getProperty(s);
+			if (v == "" || v == null) {
+				continue;
+			}
+			int n = Integer.parseInt(v);
+			if (n == 0) continue;
+			for (int i=0; i<n; i++) {
+				pieces.add(s);
+			}
 		}
-		
+		return pieces;
 	}
 
-	private static Properties readProperties(String path) {
+	protected static Properties readProperties(String path) {
 		Properties properties = new Properties();
 		File file = null;
 		FileInputStream fileInput = null;
