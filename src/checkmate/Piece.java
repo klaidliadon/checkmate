@@ -22,6 +22,7 @@ public enum Piece {
 		NAME_SET.put("king", Piece.KING);
 	}
 	
+	// Append <number> of this to the current combination, returning a map of available combinations with their free squares
 	public Map<Combination, Squares> append(Combination pieces, Squares squares, int number, Iterable<ICombinatoricsVector<Integer>> generator) {
 		Map<Combination, Squares> result = new HashMap<Combination, Squares>();
 		if (generator == null) {
@@ -58,6 +59,7 @@ public enum Piece {
 		return result;
 	}
 
+	// Filters the free squares by adding one of this
 	Squares findFree(Combination comb, Squares sq, Integer p) {
 		int px = sq.x(p);
 		int py = sq.y(p);
@@ -78,6 +80,8 @@ public enum Piece {
 		return newSq;
 	}
 	
+	
+	// check if p(px, py) is menacing i(ix, iy)
 	boolean isMenaced(int ix, int iy, int px, int py) {
 		int dx = Math.abs(ix-px);
 		int dy = Math.abs(iy-py);
