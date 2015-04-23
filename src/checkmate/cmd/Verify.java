@@ -26,7 +26,7 @@ public class Verify extends Command {
 		}
 		Properties properties = readProperties(args[1]);
 		squares = createSquares(properties);
-		List<String> pieces = new ArrayList<String>();
+		List<Piece> pieces = new ArrayList<Piece>();
 		for (String s : Piece.NAME_SET.keySet()) {
 			String v = properties.getProperty(s);
 			if (v == "" || v == null) {
@@ -36,21 +36,26 @@ public class Verify extends Command {
 			if (n == 0)
 				continue;
 			for (int i = 0; i < n; i++) {
-				pieces.add(s);
+				pieces.add(Piece.NAME_SET.get(s));
 			}
 		}
+		int i=0;
 		try {
 			File file = new File(args[0]);
 			FileReader fileReader = new FileReader(file);
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
 			String line;
+			
 			while ((line = bufferedReader.readLine()) != null) {
 				if (line.charAt(0) != '[')
 					continue;
 				verifyLine(line, pieces);
+				i++;
 			}
 			fileReader.close();
+			System.out.println(String.format("All combinations (%d) are valid", i));
 		} catch (Exception e) {
+			System.err.println(String.format("Error at combination %d: %s", i, e.getMessage()));
 			e.printStackTrace();
 		}
 	}
@@ -61,7 +66,7 @@ public class Verify extends Command {
 		return new Squares(width,height);
 	}
 
-	private static void verifyLine(String line, List<String> pieces) throws Exception {
+	private static void verifyLine(String line, List<Piece> pieces) throws Exception {
 		Combination comb = new Combination(squares.w, squares.h);
 		Matcher m = pattern.matcher(line);
 		while (m.find()) {
@@ -71,7 +76,6 @@ public class Verify extends Command {
 		}
 		if (!line.equals(comb.toString())) throw new Exception(line+"-"+comb.toString());
 		comb.verify(pieces);
-		System.out.println(line);
 	}
 
 }

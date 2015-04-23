@@ -60,15 +60,15 @@ public class Combination extends Squares {
 		return result;
 	}
 
-	public void verify(List<String> pieceList) throws Exception {
-		if (size() != pieceList.size()) {
-			throw new Exception(String.format("Invalid piece list (size %d, expected %d)", size(), pieceList.size()));
+	public void verify(List<Piece> list) throws Exception {
+		if (size() != list.size()) {
+			throw new Exception(String.format("Invalid piece list (size %d, expected %d)", size(), list.size()));
 		}
 		Map<Integer, Piece> c1 = new LinkedHashMap<Integer, Piece>();
 		Map<Integer, Piece> c2 = new LinkedHashMap<Integer, Piece>();
-		Iterator<String> pieces = pieceList.iterator();
+		Iterator<Piece> pieces = list.iterator();
 		for (Integer point : this) {
-			Piece piece = Piece.NAME_SET.get(pieces.next());
+			Piece piece = pieces.next();
 			c1.put(point, piece);
 			c2.put(point, piece);
 		}
