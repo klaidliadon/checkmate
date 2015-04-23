@@ -1,7 +1,9 @@
 package checkmate;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.paukov.combinatorics.CombinatoricsVector;
 import org.paukov.combinatorics.Factory;
@@ -40,7 +42,7 @@ public class Board {
 			for (int y=0; y<h; y++) {
 				int v = squares.xy(x, y);
 				squares.add(v);
-				if ((float)x<(float)(w/2) && (float)y<(float)(h/2)) {
+				if (x*2<w && y*2<h) {
 					quarter.add(v);
 				}
 			}
@@ -62,8 +64,31 @@ public class Board {
 				if (pieceNum>1){
 					System.out.println(String.format("After %s (x1) - %d combinantions", piece, valid.size()));
 					pieceNum--;
-					valid = addPiece(valid, piece, pieceNum);
+					Map<Combination, Squares> partial = addPiece(valid, piece, pieceNum);
+					Set<Set<Integer>> track = new HashSet<Set<Integer>>();
+					valid = new HashMap<Combination, Squares>();
+					// filtering the positions that are mirrored versions of positions already added
+					// ignoring order of pieces (using a simple HashSet) to find also scrambled combinations 
+				results:
+					for (Combination c : partial.keySet()) {
+						Set<Integer> s = new HashSet<Integer>();
+						s.addAll(c);
+						if (track.contains(s)) {
+							continue results;
+						}
+						Set<Set<Integer>> alts = new HashSet<Set<Integer>>();
+						alts.add(s);
+						for (Combination alt : c.getAlternative()) {
+							Set<Integer> a = new HashSet<Integer>();
+							a.addAll(alt);
+							alts.add(a);
+						}
+						track.addAll(alts);	
+						
+						valid.put(c, partial.get(c));		
+					}
 				}
+				
 			} else {
 				if (valid.isEmpty()) {
 					return valid;
