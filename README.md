@@ -4,9 +4,9 @@ Find all unique configurations of a custom chess board where none of the pieces 
 ## Usage
 	
 	// execute the calculation and save the output to a file
-	java Command.class <config.properties> > output.txt
+	java Command.class <config.properties>
 	// to verify your result
-	java Command.class output.txt <config.properties>
+	java Command.class  <config.properties>
 	
 ## Configuration
 
@@ -19,3 +19,5 @@ Find all unique configurations of a custom chess board where none of the pieces 
 	bishop = 2
 	knight = 1
 	king = 2
+	# file name
+	filename = output.txt

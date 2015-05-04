@@ -2,6 +2,8 @@ package checkmate.cmd;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -15,7 +17,7 @@ import checkmate.Piece;
 import checkmate.Squares;
 
 public class Command {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		if (args.length != 1) {
 			System.err.println("Usage: <command> <properties.file>");
 			System.exit(2);
@@ -23,6 +25,8 @@ public class Command {
 		Properties properties = readProperties(args[0]);
 		int width = Integer.parseInt(properties.getProperty("board.width"));
 		int height = Integer.parseInt(properties.getProperty("board.height"));
+		String filename = properties.getProperty("filename");
+		PrintWriter writer = new PrintWriter(filename, "UTF-8");
 		System.out.println(String.format("Board size: %dx%d", width, height));
 		Map<Piece, Integer> input = new LinkedHashMap<Piece, Integer>();
 		List<String> pieces = createList(properties);
@@ -41,11 +45,17 @@ public class Command {
 			System.out.println(String.format("Execution time: %d ms", t));
 			if (result != null) {
 				System.out.println(String.format("%d results found", result.size()*4));
-				for (Combination c : result.keySet()) {
-					System.out.println(c);
-					Combination[] alt = c.getAlternative();
-					for (Combination comb : alt) {
-						System.out.println(comb);
+				try {
+					for (Combination c : result.keySet()) {
+						writer.println(c);
+						Combination[] alt = c.getAlternative();
+						for (Combination comb : alt) {
+							writer.println(comb);
+						}
+					}
+				} finally {
+					if (writer != null) {
+						writer.close();
 					}
 				}
 			}

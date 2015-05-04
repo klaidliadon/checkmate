@@ -19,12 +19,12 @@ public class Verify extends Command {
 	static Squares squares;
 
 	public static void main(String[] args) {
-		if (args.length != 2) {
+		if (args.length != 1) {
 			System.err
-					.println("Usage: <command> <result.file> <configuration.file>");
+					.println("Usage: <command> <configuration.file>");
 			System.exit(2);
 		}
-		Properties properties = readProperties(args[1]);
+		Properties properties = readProperties(args[0]);
 		squares = createSquares(properties);
 		List<Piece> pieces = new ArrayList<Piece>();
 		for (String s : Piece.NAME_SET.keySet()) {
@@ -41,7 +41,7 @@ public class Verify extends Command {
 		}
 		int i=0;
 		try {
-			File file = new File(args[0]);
+			File file = new File(properties.getProperty("filename"));
 			FileReader fileReader = new FileReader(file);
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
 			String line;
